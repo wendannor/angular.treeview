@@ -1,0 +1,16 @@
+{
+  "author": {
+    "name": "https://github.com/wendannor"
+  },
+  "name": "angular.treeview",
+  "version": "0.0.1",
+  "main": "angular.treeview.js",
+  "ignore": [
+    ".idea",
+    ".demo",
+    "**/.*",
+    "node_modules",
+    "components",
+    "bower_components"
+  ]
+}
