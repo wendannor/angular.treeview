@@ -49,18 +49,27 @@
                     var nodeChildren = attrs.nodeChildren || 'children';
 
                     // show leafs
-                    var showLeafs = (attrs.showLeafs === 'true');
+                    var showLeafs = true;
+                    if (attrs.showLeafs) {
+                        showLeafs = attrs.showLeafs === 'true';
+                    }
+
+                    // drop
+                    var droppable = (attrs.droppable === 'true');
+                    var dropArg = '';
+                    if (attrs.droppable === 'true') {
+                        dropArg = ' ui-on-Drop="' + treeId + '.onDrop($data, node, node.id)"';
+                    }
 
                     //tree template
                     var template =
                         '<ul>' +
-                        '<li data-ng-repeat="node in ' + treeModel + '"  ng-switch="node.collapsed">' +
-                        '<i class="collapsed" data-ng-show="node.' + nodeChildren + '&& node.collapsed" data-ng-click="' + treeId + '.selectNodeHead(node)"></i>' +
+                        '<li ' + dropArg + ' data-ng-repeat="node in ' + treeModel + '"  ng-switch="node.collapsed">' + '<i class="collapsed" data-ng-show="node.' + nodeChildren + '&& node.collapsed" data-ng-click="' + treeId + '.selectNodeHead(node)"></i>' +
                         '<i class="expanded" data-ng-show="node.' + nodeChildren + ' && !node.collapsed" data-ng-click="' + treeId + '.selectNodeHead(node)"></i>' +
                         '<i class="normal" data-ng-show="!node.' + nodeChildren + ' && ' + showLeafs + '"></i> ' +
                         '<span data-ng-class="node.selected" data-ng-click="' + treeId + '.selectNodeLabel(node)" ng-if="' + showLeafs + '  && !node.' + nodeChildren + '">{{node.' + nodeLabel + '}}</span>' +
                         '<span data-ng-class="node.selected" data-ng-click="' + treeId + '.selectNodeLabel(node)" ng-if="node.' + nodeChildren + '">{{node.' + nodeLabel + '}}</span>' +
-                        '<div data-ng-hide="node.collapsed" data-tree-id="' + treeId + '" data-tree-model="node.' + nodeChildren + '" data-node-id=' + nodeId + ' data-node-label=' + nodeLabel + ' data-node-children=' + nodeChildren + '  ng-switch-when="false"></div>' +
+                        '<div data-ng-hide="node.collapsed" show-leafs="' + showLeafs + '" droppable="' + droppable + '" ' + dropArg + ' data-tree-id="' + treeId + '" data-tree-model="node.' + nodeChildren + '" data-node-id=' + nodeId + ' data-node-label=' + nodeLabel + ' data-node-children=' + nodeChildren + '  ng-switch-when="false"></div>' +
                         '</li>' +
                         '</ul>';
 
@@ -101,6 +110,13 @@
                                 }
 
                             };
+
+                            scope[treeId].onDrop = scope[treeId].onDrop || function ($data, node, nodeId) {
+                                if (attrs.onDrop) {
+                                    var fn = $parse(attrs.onDrop);
+                                    fn(scope, {$data: $data, node: node});
+                                }
+                            };
                         }
 
                         //Rendering template.
@@ -108,5 +124,8 @@
                     }
                 }
             };
-        }]);
-})(angular);
+        }
+        ])
+    ;
+})
+(angular);

@@ -12,5 +12,8 @@
     "node_modules",
     "components",
     "bower_components"
-  ]
+  ],
+  "dependencies": {
+    "angular-native-dragdrop": "~1.0.6"
+  }
 }
